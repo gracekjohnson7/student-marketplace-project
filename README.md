@@ -12,4 +12,4 @@ Deployed to Netlify at https://spiffy-tartufo-2a246c.netlify.app/.
 ## Authors
 **Zoe Culak** and **Grace Johnson**,
 Villanova University,
-Decemeber 2025
+December 2025
