@@ -8,6 +8,8 @@
   font-size: 0.95rem;
 }
 
+//ALL CODE BELOW IS COPIED FROM tab1.page.scss
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
