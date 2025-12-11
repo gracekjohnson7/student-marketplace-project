@@ -1,17 +1,18 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+<ion-content>
+  <div class="grid-container">
+    <div class="item-card" *ngFor="let item of items">
+      <button class="favorite-btn" (click)="toggleFavorite(item); $event.stopPropagation()">
+        <ion-icon [name]="item.favorite ? 'heart' : 'heart-outline'"></ion-icon>
+      </button>
+      <img [src]="item.image" class="item-image" (click)="openItem(item)" />
+      <div class="item-name">{{ item.name }}</div>
+    </div>
+  </div>
 </ion-content>

@@ -1,20 +1,22 @@
-/*import { Component } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ItemDetailsComponent } from '../item-details.component';
-import { ItemModelPage } from '../item-model/item-model.page';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+export interface Item {
+  name: string;
+  price: string;
+  location: string;
+  contact: string;
+  details: string;
+  image: string | null;
+  favorite: boolean;
+}
+
+@Injectable({
+  providedIn: 'root'
 })
-export class Tab1Page {
-  constructor(private modalCtrl: ModalController) {}
-  items = [
+export class ItemService {
+  // initial items
+  private items: Item[] = [
     {
       name: 'Mini Fridge',
       price: '$40',
@@ -303,60 +305,23 @@ export class Tab1Page {
     image: 'assets/detergent.jpg',
     favorite: false
   }
-  ];
-  toggleFavorite(item: any) {
-  item.favorite = !item.favorite;
-}
+  ]; //end items
 
-  async openItem(item: any) {
-    const modal = await this.modalCtrl.create({
-      component: ItemModelPage,
-      componentProps: { item }
-    });
-    return modal.present();
-  }
-}
-*/
-import { Component } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ItemModelPage } from '../item-model/item-model.page';
-import { ItemService, Item } from '../item.service';
-import { Subscription } from 'rxjs';
+  //home page updates automatically
+  private itemsSubject = new BehaviorSubject<Item[]>(this.items);
+  public items$ = this.itemsSubject.asObservable();
 
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
-})
-export class Tab1Page {
-  items: Item[] = [];
-  private subscription!: Subscription;
+  addItem(item: Item) {
+    this.items.push(item);
+    this.itemsSubject.next(this.items); // triggers updates
+  } //end addItem
 
-  constructor(private modalCtrl: ModalController, private itemService: ItemService) {}
-
-  ngOnInit() {
-    this.subscription = this.itemService.items$.subscribe((items: Item[]) => {
-      this.items = items;
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  getItems(): Item[] {
+    return this.itemsSubject.value;
+  } //end getItem
 
   toggleFavorite(item: Item) {
-    this.itemService.toggleFavorite(item);
-  }
-
-  async openItem(item: Item) {
-    const modal = await this.modalCtrl.create({
-      component: ItemModelPage,
-      componentProps: { item }
-    });
-    return modal.present();
-  }
+    item.favorite = !item.favorite;
+    this.itemsSubject.next(this.items); // emit updated items array
+  } //end toggleFavorite
 }
